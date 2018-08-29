@@ -44,12 +44,40 @@ task copyITravelWar(type: Copy, dependsOn: setupTomcat) {
     into outputDir
 }
 
-task deleteGroupArtifcats(type: Delete, dependsOn: copyITravelWar) {
+task deleteGroupArtifcats(type: Delete) {
     delete file("$projectDir/build/apache-tomcat-8.5.33/webapps/iTravelApp-1.0/WEB-INF/lib/GroupApp-2.0.jar")
 
 }
 
-task copyGroupArtifacts(type: Copy, dependsOn: deleteGroupArtifcats) {
+task copyGroupArtifacts(type: Copy, dependsOn: [deleteGroupArtifcats]) {
     from file("/Users/vara/master/ibs/projects/GroupApp/build/libs/GroupApp-2.0.jar")
     into file("$projectDir/build/apache-tomcat-8.5.33/webapps/iTravelApp-1.0/WEB-INF/lib")
+}
+
+task filepermission(type: Exec) {
+    commandLine 'chmod', '-R', '+x', "$projectDir/build/apache-tomcat-8.5.33/bin"
+}
+
+task startTomcat(type: Exec) {
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'cmd', '/c', "$projectDir/build/apache-tomcat-8.5.33/bin/startup.bat"
+    } else {
+        commandLine 'sh', '-c', "$projectDir/build/apache-tomcat-8.5.33/bin/startup.sh"
+    }
+}
+
+task stopTomcat(type: Exec) {
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'cmd', '/c', "$projectDir/build/apache-tomcat-8.5.33/bin/shutdown.bat"
+    } else {
+        commandLine 'sh', '-c', "$projectDir/build/apache-tomcat-8.5.33/bin/shutdown.sh"
+    }
+}
+
+task start(type: GradleBuild) {
+    tasks = ['copyITravelWar', 'copyGroupArtifacts', 'filepermission', 'startTomcat']
+}
+
+task stop(type: GradleBuild) {
+    tasks = ['stopTomcat']
 }
