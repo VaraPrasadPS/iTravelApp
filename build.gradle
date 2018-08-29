@@ -6,7 +6,6 @@ apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: "org.springframework.boot"
 apply plugin: 'war'
-apply plugin: 'com.bmuschko.cargo'
 
 buildscript {
     repositories {
@@ -16,8 +15,6 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE"
-        classpath 'com.bmuschko:gradle-cargo-plugin:2.2.3'
-
     }
 }
 
@@ -30,33 +27,5 @@ repositories {
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
-    compile "com.ibsplc:GroupApp:1.0"
-
-    def cargoVersion = '1.4.5'
-    cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
-            "org.codehaus.cargo:cargo-ant:$cargoVersion"
-}
-cargo {
-    containerId = 'tomcat8x'
-    port = 9090
-
-    deployable {
-        file = file('build/libs/iTravelApp-1.0.war')
-        context = 'iTravel'
-    }
-
-    local {
-        installer {
-            installUrl = "file://${projectDir}/apache-tomcat-8.5.33.zip"
-            downloadDir = file("$buildDir/download")
-            extractDir = file("$buildDir/extract")
-        }
-    }
-
-    remote {
-        hostname = 'localhost'
-        username = 'manager'
-        password = 'manager'
-    }
-
+    compile "com.ibsplc:GroupApp:2.0"
 }
