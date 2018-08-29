@@ -46,7 +46,6 @@ task copyITravelWar(type: Copy, dependsOn: setupTomcat) {
 
 task deleteGroupArtifcats(type: Delete) {
     delete file("$projectDir/build/apache-tomcat-8.5.33/webapps/iTravelApp-1.0/WEB-INF/lib/GroupApp-2.0.jar")
-
 }
 
 task copyGroupArtifacts(type: Copy, dependsOn: [deleteGroupArtifcats]) {
@@ -80,4 +79,8 @@ task start(type: GradleBuild) {
 
 task stop(type: GradleBuild) {
     tasks = ['stopTomcat']
+}
+
+task refreshGroupArtificats(type: GradleBuild) {
+    tasks = ['stopTomcat', 'copyGroupArtifacts', 'startTomcat']
 }
