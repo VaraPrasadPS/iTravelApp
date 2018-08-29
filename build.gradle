@@ -54,7 +54,11 @@ task copyGroupArtifacts(type: Copy, dependsOn: [deleteGroupArtifcats]) {
 }
 
 task filepermission(type: Exec) {
-    commandLine 'chmod', '-R', '+x', "$projectDir/build/apache-tomcat-8.5.33/bin"
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+
+    } else {
+        commandLine 'chmod', '-R', '+x', "$projectDir/build/apache-tomcat-8.5.33/bin"
+    }
 }
 
 task startTomcat(type: Exec) {
